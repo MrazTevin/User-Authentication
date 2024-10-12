@@ -1,0 +1,19 @@
+
+type UserResponseDTO {
+    id: ID
+    email: String
+    isVerified: Boolean
+    createdAt: String
+    message: String!
+}
+input UserInputDTO {
+    email: String!
+    password: String!
+}
+
+type Query {
+    getUserById(id: ID!): UserResponseDTO
+}
+type Mutation {
+    registerUser(inputDTO: UserInputDTO): UserResponseDTO
+}

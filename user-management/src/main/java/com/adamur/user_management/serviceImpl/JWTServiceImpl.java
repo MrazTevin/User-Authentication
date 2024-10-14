@@ -25,6 +25,7 @@ public class JWTServiceImpl implements JWTService
     @Value("${jwt.refresh.expiration}")
     private Long refreshExpiration;
 
+
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());
@@ -47,6 +48,11 @@ public class JWTServiceImpl implements JWTService
                 .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
 
+    private String createPasswordToken(Map<String, Object> claims, String subject, Long expiration) {
+        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
+                .signWith(SignatureAlgorithm.HS256, secret).compact();
+    }
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
@@ -77,4 +83,11 @@ public class JWTServiceImpl implements JWTService
         Date expirationDate = extractExpiration(token);
         return (expirationDate.getTime() - System.currentTimeMillis()) / 1000; // Return expiration in seconds
     }
+
+    public String generatePasswordResetToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("purpose", "password_reset");
+        return createPasswordToken(claims, userDetails.getUsername(), expiration);
+    }
+
 }

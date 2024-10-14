@@ -32,4 +32,18 @@ public class EmailServiceImpl implements EmailService {
             throw new RuntimeException("Failed to send OTP email", e);
         }
     }
+
+    public void sendPasswordResetEmail(String to, String resetToken) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(to);
+            message.setSubject("Password Reset Request");
+            message.setText("To reset your password, use the following token: " + resetToken);
+            emailSender.send(message);
+            logger.info("Password reset email sent successfully to: {}", to);
+        } catch (MailException e) {
+            logger.error("Failed to send password reset email to: {}", to, e);
+            throw new RuntimeException("Failed to send password reset email", e);
+        }
+    }
 }

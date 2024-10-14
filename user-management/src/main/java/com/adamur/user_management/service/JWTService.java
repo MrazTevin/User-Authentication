@@ -14,4 +14,6 @@ public interface JWTService {
     String extractUsername(String token);
 
     Long getTokenExpiration(String token);
+
+    String generatePasswordResetToken(UserDetails userDetails);
 }

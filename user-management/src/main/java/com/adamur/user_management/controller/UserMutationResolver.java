@@ -1,7 +1,9 @@
 package com.adamur.user_management.controller;
 
+import com.adamur.user_management.dto.user.OTPVerificationResult;
 import com.adamur.user_management.dto.user.UserInputDTO;
 import com.adamur.user_management.dto.user.UserResponseDTO;
+import com.adamur.user_management.entity.User;
 import com.adamur.user_management.service.EmailService;
 import com.adamur.user_management.service.OTPService;
 import com.adamur.user_management.service.UserService;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.stereotype.Controller;
+
+import java.util.Optional;
 
 @Controller
 public class UserMutationResolver {
@@ -49,7 +53,12 @@ public class UserMutationResolver {
     }
 
     @MutationMapping
-    public Boolean verifyOTP(@Argument String email, @Argument String otp) {
-        return otpService.verifyOTP(email, otp);
+    public OTPVerificationResult verifyOTP(@Argument String email, @Argument String otp) {
+        boolean isValid = otpService.verifyOTP(email, otp);
+        if (isValid) {
+            return otpService.verifyUserOTPStatus(email);
+        } else {
+            return new OTPVerificationResult(false, "Invalid OTP or OTP expired");
+        }
     }
 }

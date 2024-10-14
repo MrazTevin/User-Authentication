@@ -14,7 +14,13 @@ input UserInputDTO {
 type Query {
     getUserById(id: ID!): UserResponseDTO
 }
+
+type OTPVerificationResult {
+    success: Boolean!
+    message: String!
+}
 type Mutation {
     registerUser(inputDTO: UserInputDTO): UserResponseDTO
+    verifyOTP(email: String!, otp: String!): OTPVerificationResult!
 }
 

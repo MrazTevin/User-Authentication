@@ -19,8 +19,22 @@ type OTPVerificationResult {
     success: Boolean!
     message: String!
 }
+
+input LoginInput {
+    email: String!
+    password: String!
+}
+
+type LoginResponse {
+    token: String!
+    refreshToken: String!
+    expiresIn: Int!
+}
+
 type Mutation {
     registerUser(inputDTO: UserInputDTO): UserResponseDTO
     verifyOTP(email: String!, otp: String!): OTPVerificationResult!
+    login(input: LoginInput!): LoginResponse!
+    refreshToken(token: String!): LoginResponse!
 }
 

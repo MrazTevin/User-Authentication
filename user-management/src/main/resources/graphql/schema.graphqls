@@ -17,3 +17,4 @@ type Query {
 type Mutation {
     registerUser(inputDTO: UserInputDTO): UserResponseDTO
 }
+

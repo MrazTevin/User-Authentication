@@ -1,0 +1,53 @@
+
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: adamur_user_management
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATA_SOURCE_URL: jdbc:postgresql://postgres_db:5432/${POSTGRES_DB}
+      SPRING_DATA_SOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATA_SOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    networks:
+      - backend_service
+      - host_access
+
+  postgres_db:
+    container_name: adamur_db
+    image: postgres:16
+    ports:
+      - "5434:5432"
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend_service
+      - host_access
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata: {}
+
+networks:
+  backend_service:
+    internal: true
+  host_access:
+    driver: bridge

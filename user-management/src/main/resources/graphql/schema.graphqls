@@ -1,0 +1,57 @@
+
+type UserResponseDTO {
+    id: ID
+    email: String
+    isVerified: Boolean
+    createdAt: String
+    message: String!
+}
+input UserInputDTO {
+    email: String!
+    password: String!
+}
+
+type Query {
+    getUserById(id: ID!): UserResponseDTO
+}
+
+type OTPVerificationResult {
+    success: Boolean!
+    message: String!
+}
+
+input LoginInput {
+    email: String!
+    password: String!
+}
+
+type LoginResponse {
+    token: String!
+    refreshToken: String!
+    expiresIn: Int!
+}
+
+input PasswordResetRequestInput {
+    email: String!
+}
+
+input PasswordResetInput {
+    token: String!
+    newPassword: String!
+}
+
+type PasswordResetResponse {
+    success: Boolean!
+    message: String!
+}
+
+
+type Mutation {
+    registerUser(inputDTO: UserInputDTO): UserResponseDTO
+    verifyOTP(email: String!, otp: String!): OTPVerificationResult!
+    login(input: LoginInput!): LoginResponse!
+    refreshToken(token: String!): LoginResponse!
+    requestPasswordReset(input: PasswordResetRequestInput!): PasswordResetResponse!
+    resetPassword(input: PasswordResetInput!): PasswordResetResponse!
+}
+
